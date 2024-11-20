@@ -49,6 +49,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage'             // Firebase Storage
 
     implementation 'com.remotemonster:sdk:2.7.0'
+
+    // websocket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
 }
 apply plugin: 'com.google.gms.google-services' // Google Services 플러그인 추가
 
