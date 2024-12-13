@@ -1,3 +1,4 @@
+/*
 package org.example.gymbuddyback.entity;
 
 import jakarta.persistence.Id;
@@ -23,3 +24,4 @@ public class WebSocketMessage {
     private String iceCadidate;
     private String sdp;
 }
+*/

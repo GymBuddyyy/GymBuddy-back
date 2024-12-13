@@ -1,3 +1,4 @@
+/*
 package org.example.gymbuddyback.entity;
 
 import jakarta.persistence.Id;
@@ -22,3 +23,4 @@ public class ChatRoom {
     private boolean user1;
     private boolean user2;
 }
+*/

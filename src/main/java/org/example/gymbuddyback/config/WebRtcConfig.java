@@ -1,3 +1,4 @@
+/*
 package org.example.gymbuddyback.config;
 
 import lombok.RequiredArgsConstructor;
@@ -31,3 +32,4 @@ public class WebRtcConfig implements WebSocketConfigurer {
         return container;
     }
 }
+*/

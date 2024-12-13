@@ -1,3 +1,4 @@
+/*
 package org.example.gymbuddyback.entity;
 
 import jakarta.persistence.Id;
@@ -14,3 +15,4 @@ public class Notification {
     private String message;
     private boolean isRead;
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package org.example.gymbuddyback.entity;
 
 import jakarta.persistence.Id;
@@ -16,3 +17,4 @@ public class MediaStream {
     private boolean isAudio;
     private boolean isVideo;
 }
+*/

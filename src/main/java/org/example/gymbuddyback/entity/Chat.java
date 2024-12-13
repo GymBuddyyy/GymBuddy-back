@@ -1,3 +1,4 @@
+/*
 package org.example.gymbuddyback.entity;
 
 import jakarta.persistence.Id;
@@ -29,3 +30,4 @@ public class Chat {
     private Long fileSize;
 
 }
+*/
