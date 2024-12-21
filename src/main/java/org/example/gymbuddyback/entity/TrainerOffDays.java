@@ -1,12 +1,13 @@
 package org.example.gymbuddyback.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import java.sql.Time;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Builder
@@ -19,6 +20,7 @@ public class TrainerOffDays {
     private Long id;
 
     private Long trainerId;
-    private Date date;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate date;
     private Time time;
 }

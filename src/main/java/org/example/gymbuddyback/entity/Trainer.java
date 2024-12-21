@@ -15,6 +15,7 @@ public class Trainer {
     private Long id;
 
     private Long userId;
+    private String name;
     private String team;
     private String position;
     private String history;
