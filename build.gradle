@@ -73,6 +73,11 @@ dependencies {
     // 테스트
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // 이메일 인증 구현
+    implementation 'org.springframework.boot:spring-boot-starter-mail:3.1.2'
+    // Hibernate Validator 의존성 추가
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
 apply plugin: 'com.google.gms.google-services' // Google Services 플러그인 추가
 
