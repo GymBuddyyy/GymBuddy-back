@@ -1,6 +1,7 @@
 package kr.gymbuddyback.controller;
 
 import jakarta.validation.Valid;
+import kr.gymbuddyback.model.EmailCheckModel;
 import kr.gymbuddyback.model.EmailRequestModel;
 import kr.gymbuddyback.service.EmailService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,17 @@ public class MailController {
         System.out.println("이메일 인증 이메일 : " + emailRequestModel.getEmail());
         return emailService.joinEmail(emailRequestModel.getEmail());
 
+    }
+
+    @PostMapping("/mailauthCheck")
+    public String AuthCheck(@RequestBody @Valid EmailCheckModel emailCheckModel) {
+        Boolean Checked = emailService.CheckAuthNum(emailCheckModel.getEmail(),emailCheckModel.getAuthNum());
+        if(Checked){
+            return "ok";
+        }
+        else{
+            throw new NullPointerException("인증번호가 잘못 입력되었습니다.");
+        }
     }
 
 }
