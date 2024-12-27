@@ -1,21 +1,31 @@
 package kr.gymbuddyback.service.impl;
 
+import kr.gymbuddyback.entity.UserEntity;
 import kr.gymbuddyback.model.UserModel;
 import kr.gymbuddyback.repository.UserRepository;
 import kr.gymbuddyback.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    public UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
-    public UserModel register(UserModel userModel) {
+    public void joinUser(UserModel user) {
+        UserEntity userEntity = UserEntity.toUserEntity(user);
+        String encodedPassword = bCryptPasswordEncoder.encode(user.getPassword());
+        userEntity.setPassword(encodedPassword);
+        userRepository.save(userEntity);
+    }
 
-
-        return null;
+    @Override
+    public UserEntity getUserInfo(String email) {
+        UserEntity user = userRepository.findByUserEmail(email);
+        return user;
     }
 
     @Override

@@ -33,12 +33,10 @@ public class UserModel {
 
     private boolean enabled;
 
-    private Long ImageId;
 
 
     public static UserModel toUserModel (UserEntity userEntity) {
         return UserModel.builder()
-                .id(userEntity.getId())
                 .age(userEntity.getAge())
                 .address(userEntity.getAddress())
                 .email(userEntity.getEmail())
