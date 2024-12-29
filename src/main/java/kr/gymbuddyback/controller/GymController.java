@@ -17,6 +17,8 @@ public class GymController {
 
     private final GymService gymService;
 
+
+
     @GetMapping("")
     public List<GymEntity> findAll() {
         return gymService.findAll();
