@@ -1,3 +1,0 @@
-"# gymbuddy" 
-
-#gym-api
