@@ -24,7 +24,7 @@ class LogInActivity : AppCompatActivity() {
 
         // 회원가입 버튼 클릭 이벤트
         binding.signUpBtn.setOnClickListener {
-            val intent = Intent(this@LogInActivity, SignUpActivity::class.java)
+            val intent = Intent(this@LogInActivity, RoleSelectionActivity::class.java)
             startActivity(intent)
         }
 

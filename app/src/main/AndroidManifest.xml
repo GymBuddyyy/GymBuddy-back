@@ -42,6 +42,11 @@
         <activity
             android:name=".SignUpActivity"
             android:exported="true" />
+
+        <!-- RoleSelectionActivity 등록 -->
+        <activity
+            android:name=".RoleSelectionActivity"
+            android:exported="true" />
     </application>
 
 </manifest>
