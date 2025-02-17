@@ -8,47 +8,68 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- 체육관 이름 입력 -->
         <EditText
             android:id="@+id/etName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="체육관 이름" />
+            android:hint="체육관 이름"
+            android:inputType="text" />
 
+        <!-- 🔍 검색 결과 리스트 -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSearchResults"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginTop="8dp"/>
+
+        <!-- 주소 입력 -->
         <EditText
             android:id="@+id/etAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="주소" />
+            android:hint="주소"
+            android:focusable="false"/>
 
+        <!-- 위도 입력 -->
         <EditText
             android:id="@+id/etLatitude"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="위도" />
+            android:hint="위도"
+            android:focusable="false"/>
 
+        <!-- 경도 입력 -->
         <EditText
             android:id="@+id/etLongitude"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="경도" />
+            android:hint="경도"
+            android:focusable="false"/>
 
+        <!-- 전화번호 입력 -->
         <EditText
             android:id="@+id/etPhoneNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="전화번호" />
+            android:hint="전화번호"
+            android:focusable="false"/>
 
+        <!-- 사용자 ID 입력 -->
         <EditText
             android:id="@+id/etUserId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="주인장 ID" />
 
+        <!-- 🔘 등록 버튼 -->
         <Button
             android:id="@+id/btnSubmit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="등록하기" />
+            android:text="등록하기"
+            android:layout_marginTop="8dp"/>
 
     </LinearLayout>
 </ScrollView>

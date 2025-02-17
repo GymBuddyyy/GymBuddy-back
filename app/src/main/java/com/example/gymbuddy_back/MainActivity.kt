@@ -37,7 +37,12 @@ class MainActivity : AppCompatActivity() {
 
         // RecyclerView 설정
         rvGymList.layoutManager = LinearLayoutManager(this)
-        gymAdapter = GymAdapter(mutableListOf())
+        gymAdapter = GymAdapter(mutableListOf()) { selectedGym ->
+            // 선택한 체육관의 상세 정보를 보여주는 액티비티로 이동 (예시)
+            val intent = Intent(this, GymDetailActivity::class.java)
+            intent.putExtra("gymId", selectedGym.id) // 선택한 체육관 ID 전달
+            startActivity(intent)
+        }
         rvGymList.adapter = gymAdapter
 
         // Firestore에서 실시간 데이터 가져오기
