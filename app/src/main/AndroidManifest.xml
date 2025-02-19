@@ -3,8 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.gymbuddy_back">
 
-    <!-- 인터넷 및 네트워크 상태 권한 추가 -->
+    <!-- 📌 인터넷 및 네트워크 상태 권한 추가 (카카오 API 사용 시 필수) -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
@@ -18,7 +20,7 @@
         android:theme="@style/Theme.AndroidLab"
         tools:targetApi="31">
 
-        <!-- LogInActivity를 초기 화면으로 설정 -->
+        <!-- 🚀 LogInActivity를 초기 화면으로 설정 -->
         <activity
             android:name=".LogInActivity"
             android:exported="true">
@@ -28,25 +30,31 @@
             </intent-filter>
         </activity>
 
-        <!-- MainActivity 등록 -->
-        <activity
-            android:name=".MainActivity"
-            android:exported="true" />
+        <!-- ✅ MainActivity 등록 -->
+        <activity android:name=".MainActivity" android:exported="true" />
 
-        <!-- RegisterGymActivity 등록 -->
-        <activity
-            android:name=".RegisterGymActivity"
-            android:exported="true" />
+        <!-- ✅ RegisterGymActivity 등록 -->
+        <activity android:name=".RegisterGymActivity" android:exported="true" />
 
-        <!-- SignUpActivity 등록 -->
-        <activity
-            android:name=".SignUpActivity"
-            android:exported="true" />
+        <!-- ✅ SignUpActivity 등록 -->
+        <activity android:name=".SignUpActivity" android:exported="true" />
 
-        <!-- RoleSelectionActivity 등록 -->
+        <!-- ✅ RoleSelectionActivity 등록 -->
+        <activity android:name=".RoleSelectionActivity" android:exported="true" />
+
+        <!-- ✅ 📌 카카오 SDK 사용 시 필요한 Activity 등록 -->
         <activity
-            android:name=".RoleSelectionActivity"
-            android:exported="true" />
+            android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+            android:exported="true"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="kakao4798257fc2a45dd5c260e7e056197a19"/> <!-- 🔥 여기에 본인의 Kakao 네이티브 앱 키 입력 -->
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

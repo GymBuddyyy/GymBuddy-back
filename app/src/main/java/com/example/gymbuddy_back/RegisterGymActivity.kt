@@ -9,22 +9,23 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.*
-import org.json.JSONArray
-import org.json.JSONObject
-import java.io.IOException
-import java.net.URLEncoder
 
 class RegisterGymActivity : AppCompatActivity() {
 
     private lateinit var firestore: FirebaseFirestore
+    private lateinit var auth: FirebaseAuth
     private lateinit var etName: EditText
     private lateinit var etAddress: EditText
     private lateinit var etLatitude: EditText
     private lateinit var etLongitude: EditText
     private lateinit var etPhoneNumber: EditText
-    private lateinit var etUserId: EditText
     private lateinit var btnSubmit: Button
     private lateinit var rvSearchResults: RecyclerView
 
@@ -36,8 +37,9 @@ class RegisterGymActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register_gym)
 
-        // Firestore 초기화
+        // Firebase 초기화
         firestore = FirebaseFirestore.getInstance()
+        auth = FirebaseAuth.getInstance() // 🔹 FirebaseAuth 인스턴스 추가
 
         // UI 요소 초기화
         etName = findViewById(R.id.etName)
@@ -45,7 +47,6 @@ class RegisterGymActivity : AppCompatActivity() {
         etLatitude = findViewById(R.id.etLatitude)
         etLongitude = findViewById(R.id.etLongitude)
         etPhoneNumber = findViewById(R.id.etPhoneNumber)
-        etUserId = findViewById(R.id.etUserId)
         btnSubmit = findViewById(R.id.btnSubmit)
         rvSearchResults = findViewById(R.id.rvSearchResults)
 
@@ -85,85 +86,38 @@ class RegisterGymActivity : AppCompatActivity() {
     }
 
     /**
-     * 🔍 체육관 검색 API 호출 (네이버 지도 API)
+     * 🔍 체육관 검색 API 호출 (카카오 로컬 API)
      */
     private fun searchGym(query: String) {
-        val encodedQuery = URLEncoder.encode(query, "UTF-8")
-        val url = "https://openapi.naver.com/v1/search/local.json?query=$encodedQuery&display=5"
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = RetrofitClient.instance.searchPlaces(
+                    authorization = "KakaoAK eed00e1aa3c8b722ccdcf04938176e7b",
+                    query = query,
+                    longitude = null, // ✅ 위치 정보 사용 안 함
+                    latitude = null   // ✅ 위치 정보 사용 안 함
+                )
 
-        val request = Request.Builder()
-            .url(url)
-            .addHeader("X-Naver-Client-Id", "wrq72e08hn") // ✅ API 키 수정
-            .addHeader("X-Naver-Client-Secret", "Fs6snwZ08pirYH9MCZeE2XG4jm36PygLmapXr1Xc") // ✅ API 키 수정
-            .get()
-            .build()
+                if (response.isSuccessful) {
+                    val gyms = response.body()?.documents
+                        ?.take(5) // ✅ 최대 5개까지만 가져오기
+                        ?.map { it.toGym(userId = auth.currentUser?.uid ?: "unknown") } ?: emptyList() // ✅ Firestore `userId`는 `String`이므로 Firebase UID 사용
 
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                runOnUiThread {
-                    Toast.makeText(this@RegisterGymActivity, "검색 실패: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                try {
-                    val responseBody = response.body?.string()
-
-                    // 🔥 API 응답을 로그에 출력 (디버깅용)
-                    println("🔥 API 응답: $responseBody")
-
-                    if (responseBody.isNullOrEmpty()) {
-                        runOnUiThread {
-                            Toast.makeText(this@RegisterGymActivity, "검색 결과 없음", Toast.LENGTH_SHORT).show()
-                        }
-                        return
-                    }
-
-                    val json = JSONObject(responseBody)
-
-                    // ✅ `items` 키 사용 (`places` 아님)
-                    if (!json.has("items")) {
-                        runOnUiThread {
-                            Toast.makeText(this@RegisterGymActivity, "검색 결과가 없습니다.", Toast.LENGTH_SHORT).show()
-                        }
-                        return
-                    }
-
-                    val places = json.getJSONArray("items") // ✅ `items` 키 사용
-                    println("🔥 검색된 items 배열: $places")
-
-                    val gyms = mutableListOf<Gym>()
-                    for (i in 0 until places.length().coerceAtMost(5)) {
-                        val place = places.getJSONObject(i)
-                        println("🔥 검색된 체육관 데이터: $place")
-
-                        val name = place.optString("title", "이름 없음") // ✅ `name` → `title`
-                        val address = place.optString("roadAddress", "주소 없음") // ✅ `road_address` → `roadAddress`
-                        val phoneNumber = place.optString("telephone", "전화번호 없음") // ✅ `phone_number` → `telephone`
-
-                        // 네이버 API에는 위도, 경도가 없으므로 임시 값 설정
-                        val latitude = 0.0
-                        val longitude = 0.0
-
-                        gyms.add(Gym(name = name, address = address, latitude = latitude, longitude = longitude, phoneNumber = phoneNumber))
-                    }
-
-                    runOnUiThread {
+                    withContext(Dispatchers.Main) {
                         searchResults.clear()
                         searchResults.addAll(gyms)
                         gymAdapter.notifyDataSetChanged()
                         rvSearchResults.visibility = if (searchResults.isEmpty()) View.GONE else View.VISIBLE
                     }
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    runOnUiThread {
-                        Toast.makeText(this@RegisterGymActivity, "검색 중 오류 발생: ${e.message}", Toast.LENGTH_SHORT).show()
-                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@RegisterGymActivity, "검색 중 오류 발생: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
-        })
+        }
     }
+
 
 
     /**
@@ -175,9 +129,12 @@ class RegisterGymActivity : AppCompatActivity() {
         val latitude = etLatitude.text.toString().toDoubleOrNull()
         val longitude = etLongitude.text.toString().toDoubleOrNull()
         val phoneNumber = etPhoneNumber.text.toString()
-        val userId = etUserId.text.toString()
 
-        if (name.isBlank() || address.isBlank() || latitude == null || longitude == null || phoneNumber.isBlank() || userId.isBlank()) {
+        // 🔹 로그인한 유저의 UID 가져오기
+        val user = auth.currentUser
+        val userId = user?.uid ?: "unknown" // 로그인되지 않았다면 "unknown" 저장
+
+        if (name.isBlank() || address.isBlank() || latitude == null || longitude == null || phoneNumber.isBlank() || userId == "unknown") {
             Toast.makeText(this, "모든 필드를 정확히 입력하세요.", Toast.LENGTH_SHORT).show()
         } else {
             val gym = hashMapOf(
@@ -186,7 +143,7 @@ class RegisterGymActivity : AppCompatActivity() {
                 "latitude" to latitude,
                 "longitude" to longitude,
                 "phoneNumber" to phoneNumber,
-                "userId" to userId
+                "userId" to userId // ✅ 로그인한 유저의 UID 저장
             )
 
             firestore.collection("gyms").add(gym)
