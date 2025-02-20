@@ -55,5 +55,8 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
 
-    implementation("androidx.multidex:multidex:2.0.1") // 멀티덱스 라이브러리 추가
+    implementation("androidx.multidex:multidex:2.0.1")
+    implementation(libs.firebase.database.ktx)
+    implementation(libs.androidx.room.common)
+    implementation(libs.androidx.room.ktx) // 멀티덱스 라이브러리 추가
 }
